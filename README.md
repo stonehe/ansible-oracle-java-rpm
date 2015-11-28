@@ -1,4 +1,4 @@
-# Ansible Role for installing Oracle JDK on RHEL systems
+# Ansible Role for installing Oracle JDK on RHEL
 
 This role installs the Oracle JDK from Red Hat package repos, uses Alternatives to set it as default, and 
 applies the JCE policy fix.
