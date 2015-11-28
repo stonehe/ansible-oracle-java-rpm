@@ -55,3 +55,7 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Ignore jce policy files
+local_policy*.jar
+US_export_policy*.jar

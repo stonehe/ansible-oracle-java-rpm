@@ -1,0 +1,56 @@
+# Installs the Oracle Java development kit package from RHEL repositories.
+# Includes unlimited JCE policy files for added security. Uses alternatives to set java defaults.
+# Requires setting the oracle_java_version var (1.7.0, 1.8.0, etc)
+
+- name: Install Oracle JDK RPM
+  yum: pkg="java-{{ oracle_java_version }}-oracle-devel" state=present
+  sudo: yes
+
+# For some reason in my testing on RHEL6 the alternatives command for keytool will fail if this file already exists.
+- name: Remove existing keytool Alternatives File
+  file: path=/var/lib/alternatives/keytool state=absent
+  sudo: yes
+
+- name: Set Java defaults
+  alternatives:
+    name="{{ item.exe }}"
+    link="/usr/bin/{{ item.exe }}"
+    path="{{ item.path }}/{{ item.exe }}"
+  with_items:
+    - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/jre/bin", exe: 'java' }
+    - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/jre/bin", exe: 'keytool' }
+    - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/bin", exe: 'javac' }
+    - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/bin", exe: 'javadoc' }
+  sudo: yes
+
+- name: Set Default JRE
+  alternatives:
+    name="jre_oracle"
+    path="/usr/lib/jvm/jre-{{ oracle_java_version }}-oracle.x86_64"
+  sudo: yes
+
+- name: Create Unlimited JCE Policy Custom Directory
+  file: path=/usr/lib/jvm-private/oracle/jce/unlimited mode=0755 owner=root state=directory
+  sudo: yes
+
+- name: Copy Unlimited JCE Policy files
+  copy: src={{ item.src }} dest={{ item.dest }} owner=root
+  with_items:
+    - { src: "US_export_policy-{{ oracle_java_version }}.jar",
+        dest: '/usr/lib/jvm-private/oracle/jce/unlimited/US_export_policy.jar' }
+    - { src: "local_policy-{{ oracle_java_version }}.jar",
+        dest: '/usr/lib/jvm-private/oracle/jce/unlimited/local_policy.jar' }
+  sudo: yes
+
+- name: Set JCE Policy files as defaults
+  command: >
+    /usr/sbin/update-alternatives --install
+    /usr/lib/jvm/jre-{{ oracle_java_version }}-oracle.x86_64/lib/security/local_policy.jar
+    jce_{{ oracle_java_version }}_oracle_local_policy.x86_64
+    /usr/lib/jvm-private/oracle/jce/unlimited/local_policy.jar
+    900000
+    --slave
+    /usr/lib/jvm/jre-{{ oracle_java_version }}-oracle.x86_64/lib/security/US_export_policy.jar
+    jce_{{ oracle_java_version }}_oracle_us_export_policy.x86_64
+    /usr/lib/jvm-private/oracle/jce/unlimited/US_export_policy.jar
+  sudo: yes
