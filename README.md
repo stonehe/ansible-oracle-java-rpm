@@ -12,12 +12,17 @@ The policy extension files should be renamed according to the java version you'r
 support multiple versions. For example:
  
     files/US_export_policy-1.8.0.jar
-    files/local_policy.jar
+    files/local_policy-1.8.0.jar
     
 You can download the JCE extensions from the Oracle website here:
 
-- Java 1.8: http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
-- Java 1.7: http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
+**Java 1.8**
+    
+    http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html
+
+**Java 1.7** 
+    
+    http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html
  
 
 # Requirements
