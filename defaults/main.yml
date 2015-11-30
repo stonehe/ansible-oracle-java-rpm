@@ -1,1 +1,4 @@
 oracle_java_version: 1.8.0 # Default to most recent.
+jce_policy_files_path: files
+jce_us_export_policy_filename: "US_export_policy-{{ oracle_java_version }}.jar"
+jce_local_policy_filename: "local_policy-{{ oracle_java_version }}.jar"

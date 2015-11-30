@@ -36,9 +36,9 @@
 - name: Copy Unlimited JCE Policy files
   copy: src={{ item.src }} dest={{ item.dest }} owner=root
   with_items:
-    - { src: "US_export_policy-{{ oracle_java_version }}.jar",
+    - { src: "{{ jce_policy_files_path }}/{{ jce_us_export_policy_filename }}",
         dest: '/usr/lib/jvm-private/oracle/jce/unlimited/US_export_policy.jar' }
-    - { src: "local_policy-{{ oracle_java_version }}.jar",
+    - { src: "{{ jce_policy_files_path }}/{{ jce_local_policy_filename }}",
         dest: '/usr/lib/jvm-private/oracle/jce/unlimited/local_policy.jar' }
   sudo: yes
 
