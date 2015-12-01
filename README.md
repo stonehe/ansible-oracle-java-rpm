@@ -27,10 +27,14 @@ You can download the JCE extensions from the Oracle website here:
 
 # Requirements
 
-1. A Redhat server. This role has only been tested with RHEL6. Requires the Red Hat licensed RPM repos. 
+1. A Redhat server. This role has only been tested with RHEL6. Requires the Red Hat licensed RPM repos.
 
 # Variables
 
 As defined in defaults (can be overridden):
     
     oracle_java_version: 1.8.0 
+    # The name and location of the JCE policy files is tunable. 
+    jce_policy_files_path: files
+    jce_us_export_policy_filename: "US_export_policy-{{ oracle_java_version }}.jar"
+    jce_local_policy_filename: "local_policy-{{ oracle_java_version }}.jar"
