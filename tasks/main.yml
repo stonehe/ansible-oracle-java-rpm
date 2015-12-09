@@ -5,11 +5,17 @@
 - name: Install Oracle JDK RPM
   yum: pkg="java-{{ oracle_java_version }}-oracle-devel" state=present
   sudo: yes
+  tags:
+    - install
+    - upgrade
 
 # For some reason in my testing on RHEL6 the alternatives command for keytool will fail if this file already exists.
 - name: Remove existing keytool Alternatives File
   file: path=/var/lib/alternatives/keytool state=absent
   sudo: yes
+  tags:
+    - install
+    - upgrade
 
 - name: Set Java defaults
   alternatives:
@@ -22,17 +28,25 @@
     - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/bin", exe: 'javac' }
     - { path: "/usr/lib/jvm/java-{{ oracle_java_version }}-oracle.x86_64/bin", exe: 'javadoc' }
   sudo: yes
+  tags:
+    - install
+    - upgrade
 
 - name: Set Default JRE
   alternatives:
     name="jre_oracle"
     path="/usr/lib/jvm/jre-{{ oracle_java_version }}-oracle.x86_64"
   sudo: yes
+  tags:
+    - install
+    - upgrade
 
 - name: Create Unlimited JCE Policy Custom Directory
   file: path=/usr/lib/jvm-private/oracle/jce/unlimited mode=0755 owner=root state=directory
   sudo: yes
-
+  tags:
+    - install
+    - upgrade
 - name: Copy Unlimited JCE Policy files
   copy: src={{ item.src }} dest={{ item.dest }} owner=root
   with_items:
@@ -41,6 +55,9 @@
     - { src: "{{ jce_policy_files_path }}/{{ jce_local_policy_filename }}",
         dest: '/usr/lib/jvm-private/oracle/jce/unlimited/local_policy.jar' }
   sudo: yes
+  tags:
+    - install
+    - upgrade
 
 - name: Set JCE Policy files as defaults
   command: >
@@ -54,3 +71,6 @@
     jce_{{ oracle_java_version }}_oracle_us_export_policy.x86_64
     /usr/lib/jvm-private/oracle/jce/unlimited/US_export_policy.jar
   sudo: yes
+  tags:
+    - install
+    - upgrade
